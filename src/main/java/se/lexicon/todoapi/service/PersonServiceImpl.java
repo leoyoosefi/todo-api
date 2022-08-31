@@ -1,6 +1,7 @@
 package se.lexicon.todoapi.service;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.lexicon.todoapi.exception.ObjectNotFoundException;
@@ -33,11 +34,13 @@ public class PersonServiceImpl implements PersonService{
 
     @Override
     public PersonDto findById(Integer personId) throws ObjectNotFoundException {
-        return null;
+        if (personId == null) throw new IllegalArgumentException("person id is null");
+        Person result = personRepository.findById(personId).orElseThrow(()-> new ObjectNotFoundException("person data not found"));
+        return modelMapper.map(result, PersonDto.class);
     }
 
     @Override
     public List<PersonDto> findAll() {
-        return null;
+        return modelMapper.map(personRepository.findAll() , new TypeToken<List<PersonDto>>() {}.getType());
     }
 }
